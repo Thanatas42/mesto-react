@@ -1,0 +1,14 @@
+.footer {
+  margin: auto;
+  padding: 48px 0 36px;
+  width: calc(100% - 38px);
+  text-align: left;
+}
+
+@media screen and (min-width: 880px) {
+  .footer {
+    padding: 67px 0 60px;
+    width: 880px;
+    margin-bottom: auto;
+  }
+}
