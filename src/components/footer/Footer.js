@@ -1,9 +1,11 @@
+let date = new Date();
+
 function Footer() {
-    return (
+    return ((
         <footer className="footer">
-            <p className="footer__text">&copy; 2020 Mesto Russia</p>
+            <p className="footer__text">&copy; {date.getFullYear()} Mesto Russia</p>
         </footer>
-    )
+    ))
 }
 
 export default Footer;
