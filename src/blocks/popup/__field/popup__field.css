@@ -3,3 +3,11 @@
   box-sizing: border-box;
   margin-bottom: 30px;
 }
+
+.popup__field:last-child {
+  margin-bottom: 48px;
+}
+
+.popup__field:first-child {
+  margin-top: 16px;
+}

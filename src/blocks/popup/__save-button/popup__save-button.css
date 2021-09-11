@@ -22,7 +22,7 @@
   -webkit-transition: .15s;
   -o-transition: .15s;
   transition: .15s;
-  margin: 18px 0 0;
+  margin: 0;
 }
 
 .popup__save-button:hover {
