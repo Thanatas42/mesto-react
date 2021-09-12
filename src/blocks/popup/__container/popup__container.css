@@ -2,7 +2,7 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 282px;
+  max-width: 80%;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
   -webkit-transform:translate(-50%,-50%);

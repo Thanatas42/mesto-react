@@ -2,7 +2,7 @@
   object-fit: contain;
   object-position: center;
   max-height: 80vh;
+  width: 100%;
   max-width: 1440px;
-  max-width: 100%;
   height: auto;
 }
