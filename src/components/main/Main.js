@@ -1,101 +1,97 @@
-import react from "react";
+import React, { useState, useEffect } from 'react';
 import ReactDOM from "react-dom";
 import PopupWithForm from "../PopupWithForm/PopupWithForm.js";
 import pencil from "../../images/logo/pencil.svg";
+import api from "../../utils/Api.js";
+import Card from "../Card/Card.js";
+import ImagePopup from "../ImagePopup/ImagePopup.js";
 
-function handleEditProfileClick() {
-    document.querySelector('.popup_type_edit-form').classList.add('popup_opened');
-}
+function Main(props) {
+    const [userInfo, setUserInfo] = React.useState({ userName: "", userDescription: "", userAvatar: "" });
+    const [cards, SetCards] = React.useState([]);
+    //Сделал одну стейт переменную в виде обьекта с данными пользователя, мне кажется так гораздо удобнее и проще
+    React.useEffect(() => {
+        Promise.all([api.getUserData(), api.getInitialCards()])
+            .then(([userData, initialCards]) => {
+                setUserInfo({
+                    userName: userData.name,
+                    userDescription: userData.about,
+                    userAvatar: userData.avatar,
+                });
+                SetCards(initialCards);
+            })
 
-function handleEditAvatarClick() {
-    document.querySelector('.popup_type_avatar').classList.add('popup_opened');
-}
-
-function handleAddPlaceClick() {
-    document.querySelector('.popup_type_edit-form').classList.add('popup_opened');
-}
-
-
-function Main() {
-    return (
+            .catch((err) => {
+                console.log(err);
+            });
+    }, []);
+    let popa;
+    return ((
         <main className="main">
             <section className="profile">
                 <div className="profile__avatar">
-                    <img className="profile__image" src="https://pristor.ru/wp-content/uploads/2019/09/Прикольные-картинки-на-аватарку-для-мужчин-3.jpg" alt="Аватар вашего профиля" />
-                    <div className="profile__hover" onClick={handleEditAvatarClick}><img className="profile__hover-image" src={pencil} alt="" />
+                    <img className="profile__image" src={userInfo.userAvatar} alt="Аватар вашего профиля" />
+                    <div className="profile__hover" onClick={props.isEditAvatarPopupOpen}><img className="profile__hover-image" src={pencil} alt="" />
                     </div>
                 </div>
                 <article className="profile-info">
                     <div className="profile-info__container">
-                        <h1 className="profile-info__name">123</h1>
-                        <button className="profile-info__edit-button" type="button" aria-label="Редактировать" onClick={handleEditProfileClick}></button>
+                        <h1 className="profile-info__name">{userInfo.userName}</h1>
+                        <button className="profile-info__edit-button" type="button" aria-label="Редактировать" onClick={props.onEditProfile}></button>
                     </div>
-                    <p className="profile-info__subname">123</p>
+                    <p className="profile-info__subname">{userInfo.userDescription}</p>
                 </article>
-                <button className="profile__add-button" type="button" onClick={handleEditProfileClick}></button>
+                <button className="profile__add-button" type="button" onClick={props.isAddPlacePopupOpen}></button>
             </section>
 
             <section>
                 <ul className="cards">
-
+                    {cards.map((card, i) => {
+                        return (
+                            <Card card={card} key={i} onCardClick={props.onCardClick} />
+                        )
+                    })}
                 </ul>
             </section>
 
-            <PopupWithForm title="Вы уверены?"/>
+            <ImagePopup card={props.card} isOpen={props.imageOpen} closeAllPopups={props.closeAllPopups} />
 
-            <div className="popup popup_type_edit-form">
-                <form className="popup__container popup__container_type_edit-form" name="edit" noValidate>
-                    <h2 className="popup__title">Редактировать&nbsp;профиль</h2>
-                    <div className="popup__field">
-                        <input id="name-profile" className="popup__text popup__text_name" type="text" name="name-profile" minLength="2"
-                            maxLength="40" required />
-                        <span className="popup__input-error" id="name-profile-error"></span>
-                    </div>
-                    <div className="popup__field">
-                        <input id="description-profile" className="popup__text popup__text_subname" type="text" name="description-profile"
-                            minLength="2" maxLength="40" required />
-                        <span className="popup__input-error" id="description-profile-error"></span>
-                    </div>
-                    <button className="popup__save-button popup__save-button_edit popup__button" type="submit"
-                        disabled>Сохранить</button>
-                    <button className="popup__close-button popup__close-button_edit" type="reset"></button>
-                </form>
-            </div>
-
-            <div className="popup popup_type_avatar">
-                <div className="popup__container">
+            <PopupWithForm name="edit" title="Редактировать&nbsp;профиль" buttonName="Сохранить" isOpen={props.editOpen} closeAllPopups={props.closeAllPopups}>
+                <div className="popup__field">
+                    <input id="name-profile" className="popup__text popup__text_name" type="text" name="name-profile" minLength="2"
+                        maxLength="40" required />
+                    <span className="popup__input-error" id="name-profile-error"></span>
                 </div>
-                <form className="popup__container popup__form" name="popup" noValidate>
-                    <h2 className="popup__title">Обновить Аватар</h2>
-                    <div className="popup__field">
-                        <input type="url" id="avatar-link" name="avatar-link" className="popup__text" placeholder="Введите ссылку"
-                            required />
-                        <span className="popup__input-error" id="avatar-link-error"></span>
-                    </div>
-                    <button className="popup__save-button popup__button" type="submit">Сохранить</button>
-                    <button className="popup__close-button" type="reset"></button>
-                </form>
-            </div>
+                <div className="popup__field">
+                    <input id="description-profile" className="popup__text popup__text_subname" type="text" name="description-profile"
+                        minLength="2" maxLength="40" required />
+                    <span className="popup__input-error" id="description-profile-error"></span>
+                </div>
+            </PopupWithForm>
 
-            <div className="popup popup_type_add-card">
-                <form className="popup__container popup__form" name="popup" noValidate>
-                    <h2 className="popup__title">Новое&nbsp;место</h2>
-                    <div className="popup__field">
-                        <input id="name-place" className="popup__text" placeholder="Название" type="text" name="name-place" minLength="2"
-                            maxLength="30" required />
-                        <span className="popup__input-error" id="name-place-error"></span>
-                    </div>
-                    <div className="popup__field">
-                        <input id="link" className="popup__text" placeholder="Ссылка на картинку" type="url" name="link" required />
-                        <span className="popup__input-error" id="link-error"></span>
-                    </div>
-                    <button className="popup__save-button popup__save-button_add popup__button" type="submit">Создать</button>
-                    <button className="popup__close-button popup__close-button_add" type="reset"></button>
-                </form>
-            </div>
-        </main>
-    );
-}
+            <PopupWithForm name="add" title="Новое&nbsp;место" buttonName="Сохранить" isOpen={props.addOpen} closeAllPopups={props.closeAllPopups}>
+                <div className="popup__field">
+                    <input id="name-place" className="popup__text" placeholder="Название" type="text" name="name-place" minLength="2"
+                        maxLength="30" required />
+                    <span className="popup__input-error" id="name-place-error"></span>
+                </div>
+                <div className="popup__field">
+                    <input id="link" className="popup__text" placeholder="Ссылка на картинку" type="url" name="link" required />
+                    <span className="popup__input-error" id="link-error"></span>
+                </div>
+            </PopupWithForm>
 
+            <PopupWithForm name="avatar" title="Обновить&nbsp;аватар" buttonName="Сохранить" isOpen={props.avatarOpen} closeAllPopups={props.closeAllPopups}>
+                <div className="popup__field">
+                    <input type="url" id="avatar-link" name="avatar-link" className="popup__text" placeholder="Введите ссылку"
+                        required />
+                    <span className="popup__input-error" id="avatar-link-error"></span>
+                </div>
+            </PopupWithForm>
+
+            <PopupWithForm name="sure" title="Вы&nbsp;уверены?" buttonName="Да" isOpen={false} />
+        </main >
+    ));
+};
 
 export default Main;
