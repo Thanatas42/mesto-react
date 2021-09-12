@@ -3,26 +3,30 @@ import ReactDOM from "react-dom";
 import PopupWithForm from "../PopupWithForm/PopupWithForm.js";
 import pencil from "../../images/logo/pencil.svg";
 import api from "../../utils/Api.js";
-
+import Card from "../Card/Card.js";
+import ImagePopup from "../ImagePopup/ImagePopup.js";
 
 function Main(props) {
     const [userInfo, setUserInfo] = React.useState({ userName: "", userDescription: "", userAvatar: "" });
+    const [cards, SetCards] = React.useState([]);
     //Сделал одну стейт переменную в виде обьекта с данными пользователя, мне кажется так гораздо удобнее и проще
     React.useEffect(() => {
-        Promise.all([api.getUserData()])
-            .then(([userData]) => {
+        Promise.all([api.getUserData(), api.getInitialCards()])
+            .then(([userData, initialCards]) => {
                 setUserInfo({
                     userName: userData.name,
                     userDescription: userData.about,
                     userAvatar: userData.avatar,
                 });
+                SetCards(initialCards);
             })
+
             .catch((err) => {
                 console.log(err);
             });
     }, []);
-
-    return (
+    let popa;
+    return ((
         <main className="main">
             <section className="profile">
                 <div className="profile__avatar">
@@ -42,9 +46,16 @@ function Main(props) {
 
             <section>
                 <ul className="cards">
-
+                    {cards.map((card, i) => {
+                        return (
+                            <Card card={card} key={i} onCardClick={props.onCardClick} />
+                        )
+                    })}
                 </ul>
             </section>
+
+            <ImagePopup card={props.card} isOpen={props.imageOpen} closeAllPopups={props.closeAllPopups} />
+
             <PopupWithForm name="edit" title="Редактировать&nbsp;профиль" buttonName="Сохранить" isOpen={props.editOpen} closeAllPopups={props.closeAllPopups}>
                 <div className="popup__field">
                     <input id="name-profile" className="popup__text popup__text_name" type="text" name="name-profile" minLength="2"
@@ -80,8 +91,7 @@ function Main(props) {
 
             <PopupWithForm name="sure" title="Вы&nbsp;уверены?" buttonName="Да" isOpen={false} />
         </main >
-    );
-}
-
+    ));
+};
 
 export default Main;

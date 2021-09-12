@@ -1,4 +1,4 @@
-import logo from '../../logo.svg';
+import logo from '../../images/logo/header__logo.svg';
 
 function Header() {
     return (
@@ -7,6 +7,6 @@ function Header() {
                 alt="Проект Место" /></a>
         </header>
     );
-}
+};
 
 export default Header;
