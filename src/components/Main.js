@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from "react-dom";
-import PopupWithForm from "../PopupWithForm/PopupWithForm.js";
-import pencil from "../../images/logo/pencil.svg";
-import api from "../../utils/Api.js";
-import Card from "../Card/Card.js";
-import ImagePopup from "../ImagePopup/ImagePopup.js";
+import PopupWithForm from "../components/PopupWithForm.js";
+import pencil from "../images/logo/pencil.svg";
+import api from "../utils/Api.js";
+import Card from "../components/Card.js";
+import ImagePopup from "../components/ImagePopup.js";
 
 function Main(props) {
     const [userInfo, setUserInfo] = React.useState({ userName: "", userDescription: "", userAvatar: "" });
