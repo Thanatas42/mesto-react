@@ -1,51 +1,37 @@
 import React from 'react';
+import { useContext } from "react";
 import pencil from "../images/logo/pencil.svg";
-import api from "../utils/Api.js";
 import Card from "../components/Card.js";
+import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import { CardsArrayContex } from '../contexts/CardsArrayContex';
 
 
 function Main(props) {
-    const [userInfo, setUserInfo] = React.useState({ userName: "", userDescription: "", userAvatar: "" });
-    const [cards, setCards] = React.useState([]);
-    //Сделал одну стейт переменную в виде обьекта с данными пользователя, мне кажется так гораздо удобнее и проще
-    React.useEffect(() => {
-        Promise.all([api.getUserData(), api.getInitialCards()])
-            .then(([userData, initialCards]) => {
-                setUserInfo({
-                    userName: userData.name,
-                    userDescription: userData.about,
-                    userAvatar: userData.avatar,
-                });
-                setCards(initialCards);
-                console.log(initialCards);
-            })
+    const currentUser = useContext(CurrentUserContext);
+    const cards = useContext(CardsArrayContex);
 
-            .catch((err) => {
-                console.log(err);
-            });
-    }, []);
     return ((
         <main className="main">
             <section className="profile">
                 <div className="profile__avatar">
-                    <img className="profile__image" src={userInfo.userAvatar} alt="Аватар вашего профиля" />
-                    <div className="profile__hover" onClick={props.isEditAvatarPopupOpen}><img className="profile__hover-image" src={pencil} alt="Аватар вашего профиля" /></div>
+                    <img className="profile__image" onClick={props.onEditAvatar} src={currentUser.userAvatar} alt="Аватар вашего профиля" />
+                    <div className="profile__hover" onClick={props.onEditAvatar}><img className="profile__hover-image" src={pencil} alt="Аватар вашего профиля" /></div>
                 </div>
                 <article className="profile-info">
                     <div className="profile-info__container">
-                        <h1 className="profile-info__name">{userInfo.userName}</h1>
+                        <h1 className="profile-info__name">{currentUser.userName}</h1>
                         <button className="profile-info__edit-button" type="button" aria-label="Редактировать" onClick={props.onEditProfile}></button>
                     </div>
-                    <p className="profile-info__subname">{userInfo.userDescription}</p>
+                    <p className="profile-info__subname">{currentUser.userDescription}</p>
                 </article>
                 <button className="profile__add-button" type="button" onClick={props.isAddPlacePopupOpen}></button>
             </section>
 
             <section>
                 <ul className="cards">
-                    {cards.map((card, i) => {
+                    {cards.map((item, i) => {
                         return (
-                            <Card card={card} key={card._id} onCardClick={props.onCardClick} />
+                            <Card card={item} key={item._id} onCardClick={props.onCardClick} onCardLike={props.onCardLike} onCardDelete={props.onCardDelete}/>
                         )
                     })}
                 </ul>

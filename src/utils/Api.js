@@ -66,7 +66,7 @@ class Api {
       method: "PUT",
       headers: this._headers,
     }).then(handleResponse);
-  };
+  }
 
   removeLike(cardId) {
     const url = `${this._baseUrl}/cards/likes/${cardId}`;
@@ -74,7 +74,11 @@ class Api {
       method: "DELETE",
       headers: this._headers,
     }).then(handleResponse);
-  };
+  }
+
+  changeLikeCardStatus(cardId, isLiked) {
+    return isLiked ? this.addLike(cardId) : this.removeLike(cardId);
+  }
 };
 
 const api = new Api({
