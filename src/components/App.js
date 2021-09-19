@@ -56,7 +56,17 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+
+    const closeByEscape = (e) => {
+      if (e.key === 'Escape') {
+        closeAllPopups();
+      }
+    }
+
+    document.addEventListener('keydown', closeByEscape)
+
+    return () => document.removeEventListener('keydown', closeByEscape)
+  }, [])
 
 
   function handleCardLike(card) {
@@ -64,13 +74,19 @@ function App() {
 
     api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
       setCards((cards) => cards.map((c) => (c._id === card._id ? newCard : c)));
-    });
+    })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   function handleCardDelete(card) {
     api.deleteCard(card._id).then(() => {
       setCards((cards) => cards.filter((c) => c._id !== card._id));
-    });
+    })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   function handleUpdateUser(userData) {
@@ -129,10 +145,10 @@ function App() {
 
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
 
-          <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateavatar}/>
+          <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateavatar} />
 
-          <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace}/>
-          
+          <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} />
+
           <PopupWithForm name="sure" title="Вы&nbsp;уверены?" buttonName="Да" isOpen={false} />
           <Footer />
         </CardsArrayContex.Provider>

@@ -3,6 +3,7 @@ import { useRef } from "react";
 import PopupWithForm from "./PopupWithForm.js";
 
 function AddPlacePopup(props) {
+    //Бросил все силы на 12 работу, решил попозже перевести на управляемые
     const namePlaceRef = useRef();
     const linkPlaceRef = useRef();
 
