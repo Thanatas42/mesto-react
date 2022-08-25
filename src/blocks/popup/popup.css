@@ -1,14 +1,7 @@
 .popup {
-  visibility: hidden;
-}
-
-@keyframes move1 {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
+  transition: all .5s ease;
+	opacity: 0;
+	visibility: hidden;
 }
 
 .popup:before {
