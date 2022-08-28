@@ -1,19 +1,18 @@
-import React, { useContext } from 'react';
-import { CurrentUserContext } from '../contexts/CurrentUserContext';
+import React from 'react';
+import { Places } from '../utils/constants';
 
 function Card(props) {
-    const currentUser = useContext(CurrentUserContext);
 
     function handleClick() {
         props.onCardClick(props.card);
     };
 
     function onError(e) {
-        e.target.src = 'https://images.unsplash.com/photo-1640039986048-885b4234b749?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80';
+        e.target.src = Places[Math.floor(Math.random() * Places.length)];
     }
 
-    const isOwn = props.card.owner._id === currentUser.userId;
-    const isLiked = props.card.likes.some((i) => i._id === currentUser.userId);
+    const isOwn = props.card.owner._id === props.currentUser.userId;
+    const isLiked = props.card.likes.some((i) => i._id === props.currentUser.userId);
 
     return ((
         <li className="card">
@@ -26,8 +25,7 @@ function Card(props) {
                 <h2 className="card__title">{props.card.name}</h2>
                 <div>
                     <button className={`card__like-button ${isLiked ? 'card__like-button_theme_active' : ''}`}
-                        type="button" onClick={() => { props.onCardLike(props.card) }}>
-                    </button>
+                        type="button" onClick={() => { props.onCardLike(props.card) }}> </button>
                     <div className="card__counter">{props.card.likes.length === 0 ? null : props.card.likes.length}</div>
                 </div>
             </div>

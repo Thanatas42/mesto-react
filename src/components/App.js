@@ -161,7 +161,7 @@ function App() {
 
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} />
 
-          <PopupWithForm name="sure" title="Вы&nbsp;уверены?" buttonName="Да" isOpen={false} />
+          <PopupWithForm isOpen={false} name="sure" title="Вы&nbsp;уверены?" buttonName="Да" />
           <Footer />
         </CardsArrayContex.Provider>
       </CurrentUserContext.Provider>
