@@ -1,5 +1,4 @@
-import React from 'react';
-import { useContext } from "react";
+import React, { useContext } from 'react';
 import pencil from "../images/logo/pencil.svg";
 import Card from "../components/Card.js";
 import { CurrentUserContext } from '../contexts/CurrentUserContext';
@@ -29,9 +28,10 @@ function Main(props) {
 
             <section>
                 <ul className="cards">
-                    {cards.map((item, i) => {
+                    {cards.map((item) => {
                         return (
-                            <Card card={item} key={item._id} onCardClick={props.onCardClick} onCardLike={props.onCardLike} onCardDelete={props.onCardDelete}/>
+                            <Card key={item._id} card={item} onCardClick={props.onCardClick}
+                                onCardLike={props.onCardLike} onCardDelete={props.onCardDelete} currentUser={currentUser} />
                         )
                     })}
                 </ul>

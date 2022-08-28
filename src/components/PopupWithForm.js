@@ -2,7 +2,7 @@ import React from 'react';
 
 function PopupWithForm(props) {
     return ((
-        < div className={props.isOpen ? `popup popup_opened popup_type_${props.name}` : `popup popup_type_${props.name}`} >
+        < div className={`popup ${props.isOpen ? `popup_opened popup_type_${props.name}` : `popup_type_${props.name}`}`}>
             <form className="popup__container" name={props.name} onSubmit={props.onSubmit}>
                 <h2 className="popup__title">{props.title}</h2>
                 {props.children}

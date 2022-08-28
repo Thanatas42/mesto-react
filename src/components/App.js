@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './Header.js';
 import Main from './Main.js';
 import Footer from './Footer.js';
@@ -12,11 +12,11 @@ import { CurrentUserContext, CurrentUser } from '../contexts/CurrentUserContext'
 import { CardsArrayContex, CardsArray } from '../contexts/CardsArrayContex';
 
 function App() {
-  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
-  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
-  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
-  const [isImagePopupOpen, setIsImagePopupOpen] = React.useState(false);
-  const [selectedCard, selectCard] = React.useState({});
+  const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = useState(false);
+  const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = useState(false);
+  const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = useState(false);
+  const [isImagePopupOpen, setIsImagePopupOpen] = useState(false);
+  const [selectedCard, selectCard] = useState({});
 
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(true);
@@ -39,13 +39,13 @@ function App() {
     setIsImagePopupOpen(false);
   };
 
-  const [userInfo, setUserInfo] = React.useState(CurrentUser);
-  const [cards, setCards] = React.useState(CardsArray);
+  const [currentUser, setСurrentUser] = useState(CurrentUser);
+  const [cards, setCards] = useState(CardsArray);
 
-  React.useEffect(() => {
+  useEffect(() => {
     Promise.all([api.getUserData(), api.getInitialCards()])
       .then(([userData, initialCards]) => {
-        setUserInfo({
+        setСurrentUser({
           userName: userData.name,
           userDescription: userData.about,
           userAvatar: userData.avatar,
@@ -54,6 +54,7 @@ function App() {
         setCards(initialCards);
       })
       .catch((err) => {
+        console.log('12312312');
         console.log(err);
       });
 
@@ -63,14 +64,25 @@ function App() {
       }
     }
 
-    document.addEventListener('keydown', closeByEscape)
+    const overlayClick = (e) => {
 
-    return () => document.removeEventListener('keydown', closeByEscape)
+      if (e.target.classList.contains("popup")) {
+        closeAllPopups();
+      }
+    };
+
+    document.addEventListener('keydown', closeByEscape)
+    document.addEventListener('mousedown', overlayClick)
+
+    return () => {
+      document.removeEventListener('keydown', closeByEscape);
+      document.removeEventListener('mousedown', overlayClick)
+    }
   }, [])
 
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === userInfo.userId);
+    const isLiked = card.likes.some((i) => i._id === currentUser.userId);
 
     api.changeLikeCardStatus(card._id, !isLiked).then((newCard) => {
       setCards((cards) => cards.map((c) => (c._id === card._id ? newCard : c)));
@@ -92,7 +104,7 @@ function App() {
   function handleUpdateUser(userData) {
     api.updateUser(userData)
       .then((userData) => {
-        setUserInfo({
+        setСurrentUser({
           userName: userData.name,
           userDescription: userData.about,
           userAvatar: userData.avatar,
@@ -105,10 +117,10 @@ function App() {
       });
   };
 
-  function handleUpdateavatar(userData) {
+  function handleUpdateAvatar(userData) {
     api.updateAvatar(userData)
       .then((userData) => {
-        setUserInfo({
+        setСurrentUser({
           userName: userData.name,
           userDescription: userData.about,
           userAvatar: userData.avatar,
@@ -135,7 +147,7 @@ function App() {
 
   return ((
     <div className="App body">
-      <CurrentUserContext.Provider value={userInfo}>
+      <CurrentUserContext.Provider value={currentUser}>
         <CardsArrayContex.Provider value={cards}>
           <Header />
           <Main onEditProfile={handleEditProfileClick} isAddPlacePopupOpen={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick}
@@ -145,11 +157,11 @@ function App() {
 
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
 
-          <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateavatar} />
+          <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
 
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} />
 
-          <PopupWithForm name="sure" title="Вы&nbsp;уверены?" buttonName="Да" isOpen={false} />
+          <PopupWithForm isOpen={false} name="sure" title="Вы&nbsp;уверены?" buttonName="Да" />
           <Footer />
         </CardsArrayContex.Provider>
       </CurrentUserContext.Provider>
